@@ -48,7 +48,22 @@ public class ChessBoard : MonoBehaviour
                 if (checkValid(x, y))
                 {
                     this.playChess(x, y);
-                    this.checkWin_a(x, y);
+                    if (this.checkWin_a(x, y))
+                    {
+                        return;
+                    }
+                    if (this.checkWin_b(x, y))
+                    {
+                        return;
+                    }
+                    if (this.checkWin_c(x, y))
+                    {
+                        return;
+                    }
+                    if (this.checkwin_d(x, y))
+                    {
+                        return;
+                    }
                 }
             }
         }
@@ -83,6 +98,7 @@ public class ChessBoard : MonoBehaviour
             this.curType = ChessType.Black;
         }
     }
+    // 橫向檢查
     private bool checkWin_a(int x, int y)
     {
         ChessType curType = this.grid[x, y].getType();
@@ -110,6 +126,102 @@ public class ChessBoard : MonoBehaviour
             return true;
         }
 
+        return false;
+    }
+    // 直向檢查
+    private bool checkWin_b(int x, int y)
+    {
+        ChessType curType = this.grid[x, y].getType();
+        int count = 1;
+        int i = y - 1;
+        // 向下檢查
+        while (i > 0 && i >= y - 4 && this.grid[x, i].getType() == curType)
+        {
+            count += 1;
+            i = i - 1;
+        }
+        // 向上檢查
+        if (count < 5)
+        {
+            i = y + 1;
+            while (i < this.gridAmount && i <= y + 4 && this.grid[x, i].getType() == curType)
+            {
+                count += 1;
+                i = i + 1;
+            }
+        }
+        if (count >= 5)
+        {
+            Debug.Log(curType + "  WIN!!!");
+            return true;
+        }
+        return false;
+    }
+    // 左上右下檢查
+    private bool checkWin_c(int x, int y)
+    {
+        ChessType curType = this.grid[x, y].getType();
+        int count = 1;
+        int i = x - 1;
+        int j = y + 1;
+        // 左上檢查
+        while (i > 0 && i >= x - 4 && j < this.gridAmount && j <= y + 4 && this.grid[i, j].getType() == curType)
+        {
+            count++;
+            i = i - 1;
+            j = j + 1;
+        }
+        // 右下檢查
+        if (count < 5)
+        {
+            i = x + 1;
+            j = y - 1;
+            while (i < this.gridAmount && i <= x + 4 && j > 0 && j >= y - 4 && this.grid[i, j].getType() == curType)
+            {
+                count++;
+                i = i + 1;
+                j = j - 1;
+            }
+        }
+        if (count >= 5)
+        {
+            Debug.Log(curType + "  WIN!!!");
+            return true;
+        }
+
+        return false;
+    }
+    // 右上左下檢查
+    private bool checkwin_d(int x, int y)
+    {
+        ChessType curType = this.grid[x, y].getType();
+        int count = 1;
+        int i = x + 1;
+        int j = y + 1;
+        // 右上檢查
+        while (i < this.gridAmount && i <= x + 4 && j < this.gridAmount && j <= y + 4 && this.grid[i, j].getType() == curType)
+        {
+            count++;
+            i++;
+            j++;
+        }
+        // 左下檢查
+        if (count < 5)
+        {
+            i = x - 1;
+            j = y - 1;
+            while (i > 0 && i >= x - 4 && j > 0 && j >= y - 4 && this.grid[i, j].getType() == curType)
+            {
+                count++;
+                i--;
+                j--;
+            }
+        }
+        if (count >= 5)
+        {
+            Debug.Log(curType + "  WIN!!!");
+            return true;
+        }
         return false;
     }
 }
