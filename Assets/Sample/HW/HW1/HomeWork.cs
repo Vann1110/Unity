@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HomeWork : MonoBehaviour
 {
+    // content可隨意更改
     private string content = "Thorough summaries and insightful critical analyses of classic and contemporary literature. Our most popular guides include quick quizzes, so you can test your retention before the test.";
 
     public void stringCut()
@@ -20,7 +21,7 @@ public class HomeWork : MonoBehaviour
             // 若該位置為空格或"." 直接回傳整個字串
             if (this.content[index] == ' ' || this.content[index] == '.')
             {
-                str = this.content.Substring(0, index + 1);
+                str = this.content.Substring(0, index);
             }
             else
             {
