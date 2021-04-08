@@ -4,39 +4,35 @@ using UnityEngine;
 
 public class HomeWork : MonoBehaviour
 {
-    // content可隨意更改
-    private string content = "Thorough summaries and insightful critical analyses of classic and contemporary literature. Our most popular guides include quick quizzes, so you can test your retention before the test.";
-
-    public void stringCut()
+    private int index = 0;
+    public void btnClick()
     {
-        int index = Random.Range(0, this.content.Length);
-        string str = "";
+        string content = "I am coin master.";
+        string str = this.cutString(content);
+        Debug.Log("原字串:" + content);
+        Debug.Log("index:" + this.index + " 字串分割:" + str);
+    }
+
+    private string cutString(string str)
+    {
+        this.index = Random.Range(0, str.Length - 1);
+
         // 如果擷取位置超過字串長度 回傳整個字串
-        if (index >= this.content.Length)
+        if (this.index == str.Length - 1 || str[this.index] == ' ' || str[this.index] == '.' || str[this.index] == ',')
         {
-            str = this.content;
+            return str.Substring(0, this.index);
         }
         else
         {
-            // 若該位置為空格或"." 直接回傳整個字串
-            if (this.content[index] == ' ' || this.content[index] == '.')
+            // 向前檢查 直到字元為空格 或 "."
+            for (int i = index - 1; i >= 0; i--)
             {
-                str = this.content.Substring(0, index);
-            }
-            else
-            {
-                // 向前檢查 直到字元為空格 或 "."
-                for (int i = index; i >= 0; i--)
+                if (str[i] == ' ' || str[i] == '.' || str[i] == ',')
                 {
-                    if (this.content[i] == ' ' || this.content[i] == '.')
-                    {
-                        str = this.content.Substring(0, i);
-                        break;
-                    }
+                    return str.Substring(0, i);
                 }
             }
+            return "无字段可截取";
         }
-        Debug.Log("原字串:" + this.content);
-        Debug.Log("index:" + index + " 字串分割:" + str);
     }
 }

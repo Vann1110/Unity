@@ -303,7 +303,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1247998370}
-        m_MethodName: stringCut
+        m_MethodName: btnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
