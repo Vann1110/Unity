@@ -4,23 +4,21 @@ using UnityEngine;
 
 public class HomeWork : MonoBehaviour
 {
-    private int index = 0;
     public void btnClick()
     {
         string content = "I am coin master.";
-        string str = this.cutString(content);
+        int index = Random.Range(0, content.Length - 1);
+        string str = this.cutString(content, index);
         Debug.Log("原字串:" + content);
-        Debug.Log("index:" + this.index + " 字串分割:" + str);
+        Debug.Log("index:" + index + " 字串分割:" + str);
     }
 
-    private string cutString(string str)
+    private string cutString(string str, int index)
     {
-        this.index = Random.Range(0, str.Length - 1);
-
         // 如果擷取位置超過字串長度 回傳整個字串
-        if (this.index == str.Length - 1 || str[this.index] == ' ' || str[this.index] == '.' || str[this.index] == ',')
+        if (index == str.Length - 1 || str[index] == ' ' || str[index] == '.' || str[index] == ',')
         {
-            return str.Substring(0, this.index);
+            return str.Substring(0, index);
         }
         else
         {
