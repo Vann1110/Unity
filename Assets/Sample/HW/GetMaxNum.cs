@@ -23,24 +23,16 @@ public class GetMaxNum : MonoBehaviour
         string str = integer.ToString();
         int[] mergeAry = new int[str.Length + 1];
         string output = "";
-        if (num < 0)
+
+        for (int i = 0; i <= str.Length; i++)
         {
-            for (int i = 0; i <= str.Length; i++)
-            {
-                string temp = str.Insert(i, insertNum);
+            string temp = str.Insert(i, insertNum);
+            if(num < 0){
                 temp = "-" + temp;
-                mergeAry[i] = int.Parse(temp);
-                output += mergeAry[i] + ",";
             }
-        }
-        else
-        {
-            for (int i = 0; i <= str.Length; i++)
-            {
-                string temp = str.Insert(i, insertNum);
-                mergeAry[i] = int.Parse(temp);
-                output += mergeAry[i] + ",";
-            }
+            
+            mergeAry[i] = int.Parse(temp);
+            output += mergeAry[i] + ",";
         }
 
         Array.Sort(mergeAry);
