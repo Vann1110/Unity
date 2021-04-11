@@ -9,7 +9,8 @@ public class GetMaxNum : MonoBehaviour
     public Text display = null;
     public Text output = null;
 
-    public void btnClick(){
+    public void btnClick()
+    {
         int num = UnityEngine.Random.Range(-1000, 1000);
         int maxNum = this.getMaxNumber(num);
         this.output.text = "最大值:" + maxNum;
@@ -22,16 +23,26 @@ public class GetMaxNum : MonoBehaviour
         string str = integer.ToString();
         int[] mergeAry = new int[str.Length + 1];
         string output = "";
-        for (int i = 0; i <= str.Length; i++)
+        if (num < 0)
         {
-            string temp = str.Insert(i, insertNum);
-            if (num < 0)
+            for (int i = 0; i <= str.Length; i++)
             {
+                string temp = str.Insert(i, insertNum);
                 temp = "-" + temp;
+                mergeAry[i] = int.Parse(temp);
+                output += mergeAry[i] + ",";
             }
-            mergeAry[i] = int.Parse(temp);
-            output += mergeAry[i] + ",";
         }
+        else
+        {
+            for (int i = 0; i <= str.Length; i++)
+            {
+                string temp = str.Insert(i, insertNum);
+                mergeAry[i] = int.Parse(temp);
+                output += mergeAry[i] + ",";
+            }
+        }
+
         Array.Sort(mergeAry);
         this.display.text = "原數值:" + num + " | " + output;
         return mergeAry[mergeAry.Length - 1];
