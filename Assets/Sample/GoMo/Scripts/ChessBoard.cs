@@ -4,90 +4,47 @@ using UnityEngine;
 
 public class ChessBoard : MonoBehaviour
 {
-    public Transform start = null;
-    public Transform end = null;
-    public Transform chessPool = null;
-    public Transform[] x_anchor = null;
-    public Transform[] y_anchor = null;
-    public GameObject blackChess = null;
-    public GameObject whiteChess = null;
+    public Transform start = null;  // 棋盤原點
+    public Transform end = null;    // 格子間隔
+    public Transform chessPool = null;  // 棋子池
+    public Transform[] x_anchor = null; // x軸定位點
+    public Transform[] y_anchor = null; // y軸定位點
+    public GameObject blackChess = null;// 黑棋prefab
+    public GameObject whiteChess = null;// 白棋prefab
 
-    private int gridAmount = 15;    //格子數
     private float gridLength = 0;   //格子長度
-    private RaycastHit hit;
-    private GridData[,] grid;
-    private int chessIndex = 0;     //棋子數量
     private ChessType curType = ChessType.Empty;      //當前棋子類型
+    private float threshold = 0;    //棋子需小於值才可下
 
+    private ChessBoardData chessBoardData;  // 棋盤資料
+    // 初始
     public void init()
     {
+        // 棋盤資料
+        this.chessBoardData = new ChessBoardData();
         this.gridLength = Vector2.Distance(start.position, end.position);
+        this.threshold = this.gridLength / 3;
         this.curType = ChessType.Black; //黑先
-        this.chessIndex = 0;
-        this.grid = new GridData[this.gridAmount, this.gridAmount];
-        for (int i = 0; i < this.gridAmount; i++)
+    }
+    // 執行下棋
+    public void playChess(float _x, float _y)
+    {
+        int x = this.getXNearestPoint(_x);
+        int y = this.getYNearestPoint(_y);
+        // 檢查該格是否合法
+        if (this.chessBoardData.checkValid(x, y))
         {
-            for (int j = 0; j < this.gridAmount; j++)
-            {
-                this.grid[i, j] = new GridData();
-            }
+            // 放置棋子
+            this.dropChess(x, y);
+            // 設置格子資料
+            this.chessBoardData.setData(x, y, this.curType);
+            // 檢查輸贏
+            this.chessBoardData.checkWin(x, y);
         }
     }
-
-    private void Update()
+    // 放置棋子
+    private void dropChess(int x, int y)
     {
-        if (Input.GetMouseButton(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 10, -1);
-            if (hit.collider)
-            {
-                //畫出射線
-                Debug.DrawLine(ray.origin, hit.transform.position, Color.red, 0.1f, true);
-                int x = Mathf.RoundToInt((hit.point.x - this.start.position.x) / this.gridLength);
-                int y = Mathf.RoundToInt((hit.point.y - this.start.position.y) / this.gridLength);
-                //檢查該陣列是否可下
-                if (checkValid(x, y))
-                {
-                    this.playChess(x, y);
-                    if (this.checkWin_a(x, y))
-                    {
-                        return;
-                    }
-                    if (this.checkWin_b(x, y))
-                    {
-                        return;
-                    }
-                    if (this.checkWin_c(x, y))
-                    {
-                        return;
-                    }
-                    if (this.checkwin_d(x, y))
-                    {
-                        return;
-                    }
-                }
-            }
-        }
-    }
-    private bool checkValid(int x, int y)
-    {
-        // 超出邊界
-        if (x < 0 || y < 0 || x > this.gridAmount || y > this.gridAmount)
-        {
-            return false;
-        }
-        // 已有棋子
-        if (this.grid[x, y].hasChess())
-        {
-            return false;
-        }
-        return true;
-    }
-    private void playChess(int x, int y)
-    {
-        this.chessIndex++;
-        this.grid[x, y].setData(this.chessIndex, this.curType);
         Vector3 pos = new Vector3(this.x_anchor[x].position.x, this.y_anchor[y].position.y, -1);
         if (this.curType == ChessType.Black)
         {
@@ -100,156 +57,28 @@ public class ChessBoard : MonoBehaviour
             this.curType = ChessType.Black;
         }
     }
-    // 橫向檢查
-    private bool checkWin_a(int x, int y)
+    // 取得x軸最接近之定位點
+    private int getXNearestPoint(float x)
     {
-        ChessType curType = this.grid[x, y].getType();
-        int count = 1;
-        int i = x - 1;
-        // 向左檢查是否為同色棋
-        while (i > 0 && i >= x - 4 && this.grid[i, y].getType() == curType)
+        for (int i = 0; i < this.x_anchor.Length; i++)
         {
-            count += 1;
-            i = i - 1;
-        }
-        // 向右檢查是否為同色棋
-        if (count < 5)
-        {
-            i = x + 1;
-            while (i < this.gridAmount && i <= x + 4 && this.grid[i, y].getType() == curType)
+            if (Mathf.Abs(x - this.x_anchor[i].position.x) < this.threshold)
             {
-                count += 1;
-                i = i + 1;
+                return i;
             }
         }
-        if (count >= 5)
-        {
-            Debug.Log(curType + "  WIN!!!");
-            return true;
-        }
-
-        return false;
+        return -1;
     }
-    // 直向檢查
-    private bool checkWin_b(int x, int y)
+    // 取得y軸最接近之定位點
+    private int getYNearestPoint(float x)
     {
-        ChessType curType = this.grid[x, y].getType();
-        int count = 1;
-        int i = y - 1;
-        // 向下檢查
-        while (i > 0 && i >= y - 4 && this.grid[x, i].getType() == curType)
+        for (int i = 0; i < this.y_anchor.Length; i++)
         {
-            count += 1;
-            i = i - 1;
-        }
-        // 向上檢查
-        if (count < 5)
-        {
-            i = y + 1;
-            while (i < this.gridAmount && i <= y + 4 && this.grid[x, i].getType() == curType)
+            if (Mathf.Abs(x - this.y_anchor[i].position.y) < this.threshold)
             {
-                count += 1;
-                i = i + 1;
+                return i;
             }
         }
-        if (count >= 5)
-        {
-            Debug.Log(curType + "  WIN!!!");
-            return true;
-        }
-        return false;
+        return -1;
     }
-    // 左上右下檢查
-    private bool checkWin_c(int x, int y)
-    {
-        ChessType curType = this.grid[x, y].getType();
-        int count = 1;
-        int i = x - 1;
-        int j = y + 1;
-        // 左上檢查
-        while (i > 0 && i >= x - 4 && j < this.gridAmount && j <= y + 4 && this.grid[i, j].getType() == curType)
-        {
-            count++;
-            i = i - 1;
-            j = j + 1;
-        }
-        // 右下檢查
-        if (count < 5)
-        {
-            i = x + 1;
-            j = y - 1;
-            while (i < this.gridAmount && i <= x + 4 && j > 0 && j >= y - 4 && this.grid[i, j].getType() == curType)
-            {
-                count++;
-                i = i + 1;
-                j = j - 1;
-            }
-        }
-        if (count >= 5)
-        {
-            Debug.Log(curType + "  WIN!!!");
-            return true;
-        }
-
-        return false;
-    }
-    // 右上左下檢查
-    private bool checkwin_d(int x, int y)
-    {
-        ChessType curType = this.grid[x, y].getType();
-        int count = 1;
-        int i = x + 1;
-        int j = y + 1;
-        // 右上檢查
-        while (i < this.gridAmount && i <= x + 4 && j < this.gridAmount && j <= y + 4 && this.grid[i, j].getType() == curType)
-        {
-            count++;
-            i++;
-            j++;
-        }
-        // 左下檢查
-        if (count < 5)
-        {
-            i = x - 1;
-            j = y - 1;
-            while (i > 0 && i >= x - 4 && j > 0 && j >= y - 4 && this.grid[i, j].getType() == curType)
-            {
-                count++;
-                i--;
-                j--;
-            }
-        }
-        if (count >= 5)
-        {
-            Debug.Log(curType + "  WIN!!!");
-            return true;
-        }
-        return false;
-    }
-}
-
-class GridData
-{
-    int index = 0;
-    ChessType type = ChessType.Empty;
-    public void setData(int index, ChessType type)
-    {
-        this.index = index;
-        this.type = type;
-    }
-    public bool hasChess()
-    {
-        return this.type != ChessType.Empty;
-    }
-    public ChessType getType()
-    {
-        return this.type;
-    }
-}
-
-enum ChessType
-{
-    Empty = 0,
-    Black = 1,
-    White = 2
 }
