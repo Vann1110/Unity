@@ -6,25 +6,22 @@ public class ChessBoard : MonoBehaviour
 {
     public Transform start = null;
     public Transform end = null;
+    public Transform chessPool = null;
+    public Transform[] x_anchor = null;
+    public Transform[] y_anchor = null;
     public GameObject blackChess = null;
     public GameObject whiteChess = null;
-    public Transform chessPool = null;
 
     private int gridAmount = 15;    //格子數
-    public float gridLength = 0;   //格子長度
+    private float gridLength = 0;   //格子長度
     private RaycastHit hit;
     private GridData[,] grid;
     private int chessIndex = 0;     //棋子數量
     private ChessType curType = ChessType.Empty;      //當前棋子類型
 
-    private void Start()
-    {
-        this.gridLength = Vector2.Distance(start.position, end.position);
-        this.init();
-    }
-
     public void init()
     {
+        this.gridLength = Vector2.Distance(start.position, end.position);
         this.curType = ChessType.Black; //黑先
         this.chessIndex = 0;
         this.grid = new GridData[this.gridAmount, this.gridAmount];
@@ -39,12 +36,17 @@ public class ChessBoard : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (Input.GetMouseButton(0))
         {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 10, -1);
+            if (hit.collider)
             {
+                //畫出射線
+                Debug.DrawLine(ray.origin, hit.transform.position, Color.red, 0.1f, true);
                 int x = Mathf.RoundToInt((hit.point.x - this.start.position.x) / this.gridLength);
                 int y = Mathf.RoundToInt((hit.point.y - this.start.position.y) / this.gridLength);
+                //檢查該陣列是否可下
                 if (checkValid(x, y))
                 {
                     this.playChess(x, y);
@@ -86,7 +88,7 @@ public class ChessBoard : MonoBehaviour
     {
         this.chessIndex++;
         this.grid[x, y].setData(this.chessIndex, this.curType);
-        Vector3 pos = this.start.position + new Vector3(x * this.gridLength, y * this.gridLength, -1);
+        Vector3 pos = new Vector3(this.x_anchor[x].position.x, this.y_anchor[y].position.y, -1);
         if (this.curType == ChessType.Black)
         {
             Instantiate(this.blackChess, pos, Quaternion.identity).transform.parent = this.chessPool;
