@@ -3,7 +3,6 @@ class ChessBoardData
 {
     int index = 0;  // 棋子個數
     private int gridAmount = 15;
-    // ChessType type = ChessType.Empty;
     private CellData[,] grid;
     // 建構子
     public ChessBoardData()

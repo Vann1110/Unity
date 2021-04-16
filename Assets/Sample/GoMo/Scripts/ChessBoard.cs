@@ -20,11 +20,19 @@ public class ChessBoard : MonoBehaviour
     // 初始
     public void init()
     {
-        // 棋盤資料
-        this.chessBoardData = new ChessBoardData();
         this.gridLength = Vector2.Distance(start.position, end.position);
         this.threshold = this.gridLength / 3;
+        this.chessBoardData = new ChessBoardData();  // 棋盤資料
         this.curType = ChessType.Black; //黑先
+    }
+    public void reset()
+    {
+        this.init();
+        for (int i = 0; i < this.chessPool.childCount; i++)
+        {
+            GameObject obj = this.chessPool.GetChild(i).gameObject;
+            Destroy(obj);
+        }
     }
     // 執行下棋
     public void playChess(float _x, float _y)

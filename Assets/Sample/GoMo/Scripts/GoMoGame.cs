@@ -25,6 +25,11 @@ public class GoMoGame : MonoBehaviour
             }
         }
     }
+
+    public void restart()
+    {
+        this.chessBoard.reset();
+    }
 }
 
 enum GameStatus
