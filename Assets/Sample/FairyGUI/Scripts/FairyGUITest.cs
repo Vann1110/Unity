@@ -14,7 +14,7 @@ public class FairyGUITest : MonoBehaviour
     {
         this.mainUI = this.GetComponent<UIPanel>().ui;
         this.effect = UIPackage.CreateObject("Package1", "Boss").asCom;
-        this.mainUI.GetChild("n0").onClick.Add(() => { this.playUI(this.effect); });
+        this.mainUI.GetChild("n3").onClick.Add(() => { this.playUI(this.effect); });
         this.group = this.mainUI.GetChild("n2").asGroup;
     }
 
