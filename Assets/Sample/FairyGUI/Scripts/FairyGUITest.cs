@@ -5,13 +5,17 @@ using FairyGUI;
 
 public class FairyGUITest : MonoBehaviour
 {
+    private GComponent mainUI;
+    private GComponent effect;
+    private GGroup group;
+
     // Start is called before the first frame update
     void Start()
     {
-        GRoot.inst.SetContentScaleFactor(800, 600);
-        UIPackage.AddPackage("FGUI/Package1");
-        GComponent component = UIPackage.CreateObject("Package1", "Component2").asCom;
-        GRoot.inst.AddChild(component);
+        this.mainUI = this.GetComponent<UIPanel>().ui;
+        this.effect = UIPackage.CreateObject("Package1", "Boss").asCom;
+        this.mainUI.GetChild("n0").onClick.Add(() => { this.playUI(this.effect); });
+        this.group = this.mainUI.GetChild("n2").asGroup;
     }
 
     // Update is called once per frame
@@ -19,4 +23,17 @@ public class FairyGUITest : MonoBehaviour
     {
 
     }
+
+    private void playUI(GComponent target)
+    {
+        this.group.visible = false;
+        GRoot.inst.AddChild(target);
+        Transition t = target.GetTransition("t0");
+        t.Play(() =>
+        {
+            this.group.visible = true;
+            GRoot.inst.RemoveChild(target);
+        });
+    }
+
 }
