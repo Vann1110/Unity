@@ -15,16 +15,9 @@ public class FairyGUITest_02 : MonoBehaviour
     void Start()
     {
         this.mainUI = this.GetComponent<UIPanel>().ui;
-        this.addValueCom = UIPackage.CreateObject("Package1", "Test").asCom;
-        Debug.Log(this.addValueCom);
+        this.addValueCom = UIPackage.CreateObject("Package1", "AddAnim").asCom;
         this.addValueCom.GetTransition("t0").SetHook("AddValue", this.addAttackValue);
         this.mainUI.GetChild("n0").onClick.Add(() => { this.playUI(this.addValueCom); });
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void playUI(GComponent target)
@@ -36,11 +29,11 @@ public class FairyGUITest_02 : MonoBehaviour
         int add = Random.Range(1000, 3000);
         this.targetValue = this.startValue + add;
         target.GetChild("n4").text = this.startValue.ToString();
-        target.GetChild("n5").text = "+" + add.ToString();
+        target.GetChild("n5").text = "+" +add.ToString();
         t.Play(() =>
         {
             this.mainUI.GetChild("n0").visible = true;
-            GRoot.inst.RemoveChild(target);
+             GRoot.inst.RemoveChild(target);
         });
     }
 
