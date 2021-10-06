@@ -44,6 +44,31 @@ namespace TicTacToe
 
             return true;
         }
+
+        public bool checkWin(int x, int y)
+        {
+            CellData cell = this.grid[x, y];
+            // 順時鐘搜尋 擴展兩格
+            // 向上
+            int count = 0;
+            for (int i = y + 1; i < this.gridAmount; i++)
+            {
+                if (cell.getType() != this.grid[x, i].getType())
+                {
+                    Debug.Log("test");
+                    break;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            if (count == 2)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public class CellData

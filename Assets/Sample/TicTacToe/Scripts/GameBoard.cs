@@ -44,7 +44,23 @@ namespace TicTacToe
                 // 設置格子資料
                 this.boardData.setData(x, y, this.curType);
                 // 檢查輸贏
-                // this.boardData.checkWin(x, y);
+                if (this.boardData.checkWin(x, y))
+                {
+                    // 重新開始
+                    Debug.Log(this.curType + " 贏了!!!");
+                }
+                else
+                {
+                    // 切換回合
+                    if (this.curType == ChessType.Black)
+                    {
+                        this.curType = ChessType.White;
+                    }
+                    else
+                    {
+                        this.curType = ChessType.Black;
+                    }
+                }
                 Debug.Log("x:" + x + " " + "y" + y);
             }
         }
@@ -58,12 +74,10 @@ namespace TicTacToe
             if (this.curType == ChessType.Black)
             {
                 obj.GetComponent<SpriteRenderer>().sprite = this.black;
-                this.curType = ChessType.White;
             }
             else
             {
                 obj.GetComponent<SpriteRenderer>().sprite = this.white;
-                this.curType = ChessType.Black;
             }
         }
 
