@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace TicTacToe
 {
+    // 棋盤資料
     public class BoardData
     {
         private int gridAmount = 3; // 格子3x3
         private CellData[,] grid = null;   // 二維陣列
+        private float slashSlope = 1;   //斜線斜率
 
         // 建構子
         public BoardData()
@@ -45,17 +47,16 @@ namespace TicTacToe
             return true;
         }
 
+        // 檢查輸贏
         public bool checkWin(int x, int y)
         {
             CellData cell = this.grid[x, y];
-            // 順時鐘搜尋 擴展兩格
-            // 向上
             int count = 0;
-            for (int i = y + 1; i < this.gridAmount; i++)
+            // 橫向檢查 x:0~2
+            for (int i = 0; i < 3; i++)
             {
-                if (cell.getType() != this.grid[x, i].getType())
+                if (cell.type != this.grid[i, y].type)
                 {
-                    Debug.Log("test");
                     break;
                 }
                 else
@@ -63,29 +64,98 @@ namespace TicTacToe
                     count++;
                 }
             }
-            if (count == 2)
+            if (count == 3)
             {
                 return true;
             }
+            count = 0;
+            // 直向檢查 y:0~2
+            for (int i = 0; i < 3; i++)
+            {
+                if (cell.type != this.grid[x, i].type)
+                {
+                    break;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            Debug.Log(count);
+            if (count == 3)
+            {
+                return true;
+            }
+            count = 0;
+            // 左上右下 斜向檢查
+            if (getSlope(new Vector2(0, 0), new Vector2(x, y)) == this.slashSlope)
+            {
+                if (this.grid[0, 0].type == cell.type)
+                {
+                    count++;
+                }
+                if (this.grid[1, 1].type == cell.type)
+                {
+                    count++;
+                }
+                if (this.grid[2, 2].type == cell.type)
+                {
+                    count++;
+                }
+                if (count == 3)
+                {
+                    return true;
+                }
+            }
+            count = 0;
+            // 右上左下 斜向檢查
+            if (getSlope(new Vector2(0, 2), new Vector2(x, y)) == -this.slashSlope)
+            {
+                if (this.grid[0, 2].type == cell.type)
+                {
+                    count++;
+                }
+                if (this.grid[1, 1].type == cell.type)
+                {
+                    count++;
+                }
+                if (this.grid[2, 0].type == cell.type)
+                {
+                    count++;
+                }
+                if (count == 3)
+                {
+                    return true;
+                }
+            }
             return false;
+        }
+        // 斜率計算
+        private float getSlope(Vector2 a, Vector2 b)
+        {
+            return (b.y - a.y) / (b.x - a.x);
         }
     }
 
     public class CellData
     {
-        private ChessType type = ChessType.Empty;
+        private ChessType _type = ChessType.Empty;
+        public ChessType type
+        {
+            get { return this._type; }
+            private set
+            {
+                this._type = ChessType.Empty;
+            }
+        }
         // 是否為空格
         public bool hasChess()
         {
-            return this.type != ChessType.Empty;
+            return this._type != ChessType.Empty;
         }
         public void setData(ChessType type)
         {
-            this.type = type;
-        }
-        public ChessType getType()
-        {
-            return this.type;
+            this._type = type;
         }
     }
 

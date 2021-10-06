@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace TicTacToe
 {
+    // 棋盤實體
     public class GameBoard : MonoBehaviour
     {
         [SerializeField]
@@ -81,6 +82,7 @@ namespace TicTacToe
             }
         }
 
+        // x座標定位
         private int getXNearestPoint(float _x)
         {
             for (int i = 0; i < this.xPoints.Length; i++)
@@ -92,6 +94,8 @@ namespace TicTacToe
             }
             return -1;
         }
+
+        // y座標定位
         private int getYNearestPoint(float _y)
         {
             for (int i = 0; i < this.yPoints.Length; i++)
