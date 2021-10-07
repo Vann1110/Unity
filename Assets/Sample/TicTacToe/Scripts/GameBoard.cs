@@ -26,11 +26,28 @@ namespace TicTacToe
         private BoardData boardData = null;  //棋盤資料
         private ChessType curType = TicTacToe.ChessType.Empty;    // 當前棋子類型
 
+        public void start()
+        {
+            foreach (Transform point in this.xPoints)
+            {
+                point.gameObject.SetActive(false);
+            }
+            foreach (Transform point in this.yPoints)
+            {
+                point.gameObject.SetActive(false);
+            }
+        }
+
         // 棋盤初始
         public void init()
         {
             this.boardData = new BoardData();
             this.curType = TicTacToe.ChessType.Black;  //黑先
+            // 清除棋盤
+            foreach (Transform obj in this.objPool.transform)
+            {
+                GameObject.Destroy(obj.gameObject);   
+            }
         }
 
         // 執行下棋
@@ -38,7 +55,6 @@ namespace TicTacToe
         {
             int x = this.getXNearestPoint(_x);
             int y = this.getYNearestPoint(_y);
-
             if (this.boardData.checkValid(x, y))
             {
                 this.dropChess(x, y);
@@ -47,6 +63,14 @@ namespace TicTacToe
                 // 檢查輸贏
                 if (this.boardData.checkWin(x, y))
                 {
+                    if (this.curType == ChessType.Black)
+                    {
+                        GameData.Inst.setBlackWin();
+                    }
+                    else
+                    {
+                        GameData.Inst.setWhiteWin();
+                    }
                     // 重新開始
                     Debug.Log(this.curType + " 贏了!!!");
                 }

@@ -81,7 +81,6 @@ namespace TicTacToe
                     count++;
                 }
             }
-            Debug.Log(count);
             if (count == 3)
             {
                 return true;
