@@ -62,6 +62,12 @@
             this.ui.topPanel.updateInfo();
             this.ui.controlPanel.showRestart("白贏!");
         }
+
+        public void setDraw()
+        {
+            this._gameState = GameState.Over;
+            this.ui.controlPanel.showRestart("平手!");
+        }
     }
 
     public enum GameState

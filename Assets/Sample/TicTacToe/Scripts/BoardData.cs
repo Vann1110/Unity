@@ -66,6 +66,7 @@ namespace TicTacToe
             }
             if (count == 3)
             {
+                Debug.Log("橫向");
                 return true;
             }
             count = 0;
@@ -83,6 +84,7 @@ namespace TicTacToe
             }
             if (count == 3)
             {
+                Debug.Log("直向");
                 return true;
             }
             count = 0;
@@ -103,6 +105,7 @@ namespace TicTacToe
                 }
                 if (count == 3)
                 {
+                    Debug.Log("斜向");
                     return true;
                 }
             }
@@ -124,6 +127,7 @@ namespace TicTacToe
                 }
                 if (count == 3)
                 {
+                    Debug.Log("斜向");
                     return true;
                 }
             }
